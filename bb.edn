@@ -1,0 +1,24 @@
+{:deps {com.github.hephaistox/auto-build
+          {:git/sha "6e9a158ebf50ed9d0291f05c767b056c24508ca5"}},
+ :paths ["monorepo/src"],
+ :tasks
+   {:init
+      (defn to-dir [dir prj] (or dir (str/replace prj (re-pattern "-") "_"))),
+    :requires [[clojure.edn :as edn] [clojure.string :as str]],
+    copy {:doc "Execute copies defined in `reference/copy.edn`",
+          :requires [[tasks.copy :refer [do-copy]]],
+          :task (do-copy)},
+    delegate
+      {:doc
+         "Delegate command to projects defined in `monorepo/reference/deps.edn`",
+       :requires [[auto-build.echo :refer [level1-header]]
+                  [tasks.delegate :refer [do-delegate]]],
+       :task (do-delegate level1-header *command-line-args*)},
+    git-show {:doc "Show status",
+              :requires [[auto-build.echo :refer [level1-header]]
+                         [tasks.show :refer [do-show]]],
+              :task (do-show level1-header)},
+    push {:doc "Push a ref to all projects",
+          :requires [[auto-build.echo :refer [level1-header]]
+                     [tasks.push :refer [do-push]]],
+          :task (do-push level1-header *command-line-args*)}}}
