@@ -1,11 +1,22 @@
-{:build-to-all {:dirs ["auto_core" "auto_opti" "auto_js"],
+{:build-to-all {:dirs ["auto_core" "auto_opti" "auto_js" "auto_web" "sasu"
+                       "landing"],
                 :files [".zprintrc" "LICENSE.md"],
                 :src "auto_build"},
- :build-to-automatons {:dirs ["auto_core" "auto_opti" "auto_js"],
+ :build-to-automatons {:dirs ["auto_core" "auto_opti" "auto_js" "auto_web"],
                        :files ["docs/img/automaton_duck.png"
                                ".github/workflows/deploy_clojar.yml"
                                ".github/workflows/commit_validation.yml"],
                        :src "auto_build"},
- :core-to-js {:dirs ["auto_opti" "auto_js" "auto_web"],
+ :build-to-custapps {:dirs ["sasu" "landing"],
+                     :files [".github/workflows/commit_validation.yml"],
+                     :src "auto_build"},
+ :core-to-js {:dirs ["auto_opti" "auto_js" "auto_web" "landing"],
               :files [".gitignore"],
-              :src "auto_core"}}
+              :src "auto_core"},
+ :web-to-custapps {:dirs ["sasu" "landing"],
+                   :files ["resources/css/main.css"
+                           "resources/log_config/log4j2.properties"
+                           "resources/log_config/logging-tests.properties"
+                           "resources/public/font/PlusJakartaSans-Bold.ttf"
+                           "resources/public/font/PlusJakartaSans-Regular.ttf"],
+                   :src "auto_web"}}

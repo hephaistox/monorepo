@@ -15,7 +15,30 @@
              :deps [{:path [:deps com.github.hephaistox/auto-core],
                      :src-prj :auto-core}],
              :order 3},
+ :auto-web {:bb [{:path [:deps com.github.hephaistox/auto-build],
+                  :src-prj :auto-build}],
+            :deps [{:path [:deps com.github.hephaistox/auto-core],
+                    :src-prj :auto-core}],
+            :order 5},
+ :landing
+   {:bb [{:path [:deps com.github.hephaistox/auto-build],
+          :src-prj :auto-build}],
+    :deps [{:path [:deps com.github.hephaistox/auto-core], :src-prj :auto-core}
+           {:path [:aliases :cljs-deps :extra-deps
+                   com.github.hephaistox/auto-web],
+            :src-prj :auto-web}
+           {:path [:deps com.github.hephaistox/auto-web], :src-prj :auto-web}],
+    :order 101},
  :monorepo {:bb [{:path [:deps com.github.hephaistox/auto-build],
                   :src-prj :auto-build}],
             :dir ".",
-            :order 999999}}
+            :order 999999},
+ :sasu {:bb [{:path [:deps com.github.hephaistox/auto-build],
+              :src-prj :auto-build}],
+        :deps
+          [{:path [:deps com.github.hephaistox/auto-core], :src-prj :auto-core}
+           {:path [:aliases :cljs-deps :extra-deps
+                   com.github.hephaistox/auto-web],
+            :src-prj :auto-web}
+           {:path [:deps com.github.hephaistox/auto-web], :src-prj :auto-web}],
+        :order 100}}
