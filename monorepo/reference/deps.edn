@@ -1,44 +1,40 @@
-{:auto-build {:order 1},
- :auto-core {:bb [{:path [:deps com.github.hephaistox/auto-build],
-                   :src-prj :auto-build}],
-             :deps [],
-             :order 2},
- :auto-js {:bb [{:path [:deps com.github.hephaistox/auto-build],
-                 :src-prj :auto-build}],
-           :deps [{:path [:deps com.github.hephaistox/auto-core],
-                   :src-prj :auto-core}
-                  {:path [:deps com.github.hephaistox/auto-opti],
-                   :src-prj :auto-opti}],
-           :order 4},
- :auto-opti {:bb [{:path [:deps com.github.hephaistox/auto-build],
-                   :src-prj :auto-build}],
-             :deps [{:path [:deps com.github.hephaistox/auto-core],
-                     :src-prj :auto-core}],
-             :order 3},
- :auto-web {:bb [{:path [:deps com.github.hephaistox/auto-build],
-                  :src-prj :auto-build}],
-            :deps [{:path [:deps com.github.hephaistox/auto-core],
-                    :src-prj :auto-core}],
-            :order 5},
- :landing
-   {:bb [{:path [:deps com.github.hephaistox/auto-build],
-          :src-prj :auto-build}],
-    :deps [{:path [:deps com.github.hephaistox/auto-core], :src-prj :auto-core}
-           {:path [:aliases :cljs-deps :extra-deps
-                   com.github.hephaistox/auto-web],
-            :src-prj :auto-web}
-           {:path [:deps com.github.hephaistox/auto-web], :src-prj :auto-web}],
-    :order 101},
- :monorepo {:bb [{:path [:deps com.github.hephaistox/auto-build],
-                  :src-prj :auto-build}],
-            :dir ".",
-            :order 999999},
- :sasu {:bb [{:path [:deps com.github.hephaistox/auto-build],
-              :src-prj :auto-build}],
-        :deps
-          [{:path [:deps com.github.hephaistox/auto-core], :src-prj :auto-core}
-           {:path [:aliases :cljs-deps :extra-deps
-                   com.github.hephaistox/auto-web],
-            :src-prj :auto-web}
-           {:path [:deps com.github.hephaistox/auto-web], :src-prj :auto-web}],
-        :order 100}}
+[{:app-id :auto-build, :order 1}
+ {:app-id :auto-core,
+  :bb [{:path [:deps com.github.hephaistox/auto-build], :src-prj :auto-build}],
+  :deps [],
+  :order 2}
+ {:app-id :auto-opti,
+  :bb [{:path [:deps com.github.hephaistox/auto-build], :src-prj :auto-build}],
+  :deps [{:path [:deps com.github.hephaistox/auto-core], :src-prj :auto-core}],
+  :order 3}
+ {:app-id :auto-js,
+  :bb [{:path [:deps com.github.hephaistox/auto-build], :src-prj :auto-build}],
+  :deps [{:path [:repl :extra-deps com.github.hephaistox/auto-build],
+          :src-prj auto-build}
+         {:path [:deps com.github.hephaistox/auto-opti], :src-prj :auto-opti}],
+  :order 4}
+ {:app-id :auto-web,
+  :bb [{:path [:deps com.github.hephaistox/auto-build], :src-prj :auto-build}],
+  :deps [{:path [:deps com.github.hephaistox/auto-core], :src-prj :auto-core}],
+  :order 5}
+ {:app-id :auto-sim,
+  :bb [{:path [:deps com.github.hephaistox/auto-build], :src-prj :auto-build}],
+  :deps [{:path [:deps com.github.hephaistox/auto-opti], :src-prj :auto-opti}],
+  :order 12}
+ {:app-id :landing,
+  :bb [{:path [:deps com.github.hephaistox/auto-build], :src-prj :auto-build}],
+  :deps
+    [{:path [:aliases :cljs-deps :extra-deps com.github.hephaistox/auto-js],
+      :src-prj :auto-js}
+     {:path [:aliases :cljs-deps :extra-deps com.github.hephaistox/auto-sim],
+      :src-prj :auto-sim}
+     {:path [:aliases :cljs-deps :extra-deps com.github.hephaistox/auto-web],
+      :src-prj :auto-web}
+     {:path [:deps com.github.hephaistox/auto-js], :src-prj :auto-js}
+     {:path [:deps com.github.hephaistox/auto-sim], :src-prj :auto-sim}
+     {:path [:deps com.github.hephaistox/auto-web], :src-prj :auto-web}],
+  :order 101}
+ {:app-id :monorepo,
+  :bb [{:path [:deps com.github.hephaistox/auto-build], :src-prj :auto-build}],
+  :dir ".",
+  :order 999999}]

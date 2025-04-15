@@ -4,21 +4,17 @@
             [auto-build.os.cmd :as build-cmd :refer [as-string]]
             [clojure.string :as str]))
 
-(defn- add-ids
-  "For `mm` a map of map, turns `{:foo {}}` to `{:foo {:id :foo}}` so they key of the outer map is found in the inner one."
-  [mm id-kw]
-  (into {} (mapv (fn [[k v]] [k (assoc v id-kw k)]) mm)))
-
 (defn- to-dir [dir prj] (or dir (str/replace (name prj) (re-pattern "-") "_")))
 
 (defn read
   [filename]
-  (-> filename
-      slurp
-      edn/read-string
-      (add-ids :prj)
-      (update-vals (fn [{:keys [dir prj], :as project}]
-                     (assoc project :dir (to-dir dir prj))))))
+  (->> (slurp filename)
+       edn/read-string
+       (mapv (fn [{:keys [dir app-id], :as d}] [app-id
+                                                (assoc d
+                                                  :prj app-id
+                                                  :dir (to-dir dir app-id))]))
+       (into (sorted-map))))
 
 (defn actual-git
   "Add git data"
@@ -40,6 +36,7 @@
                                        first))))))
 
 (comment
+  (read "monorepo/reference/deps.edn")
   (actual-git "monorepo/reference/deps.edn")
   ;
 )

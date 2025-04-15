@@ -12,3 +12,15 @@
                             (clojure.core/assoc-in ks val))]
     (spit fullpath new-content)
     (format-file printers project-dir path)))
+
+(defn update-order
+  [printers project-dir path]
+  (let [fullpath (str project-dir "/" path)
+        content (some-> fullpath
+                        slurp
+                        edn/read-string)
+        new-content (->> content
+                         (sort-by (comp :order second))
+                         vec)]
+    (spit fullpath new-content)
+    (format-file printers project-dir path)))

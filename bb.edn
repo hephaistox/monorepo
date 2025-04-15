@@ -1,5 +1,5 @@
 {:deps {com.github.hephaistox/auto-build
-          {:git/sha "ab873a34f6757bb46f750f9e415b17f534c219bd"}},
+          {:git/sha "319337735ac9f23be4b4dabdc610b5b0095b5ed2"}},
  :paths ["monorepo/src"],
  :tasks
    {:init
