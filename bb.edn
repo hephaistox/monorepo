@@ -1,26 +1,20 @@
-{:deps {com.github.hephaistox/auto-build
-          {:git/sha "0c5a81483005c393094ca557fa0f43e1175ad57d"}},
+{:deps {com.github.hephaistox/auto-build {:local/root "auto_build"},
+        #_{:git/sha "0c5a81483005c393094ca557fa0f43e1175ad57d"}},
  :paths ["monorepo/src"],
  :tasks
-   {:init
-      (do
-        (defn to-dir [dir prj] (or dir (str/replace prj (re-pattern "-") "_")))
-        (defn is-monorepo?
-          [project-symbol]
-          (re-find (re-pattern "com.github.hephaistox") (str project-symbol)))),
-    :requires [[clojure.edn :as edn] [clojure.string :as str]],
+   {:requires [[clojure.edn :as edn] [clojure.string :as str]],
     latest
       {:doc
          "References of monorepo target and its dependencies are moved to latest commit.",
        :requires [[auto-build.echo :refer [level1-header]]
                   [tasks.latest :as tl]],
-       :task (tl/run level1-header is-monorepo? *command-line-args*)},
+       :task (tl/run level1-header *command-line-args*)},
     local
       {:doc
          "References of monorepo target and its dependencies are moved to local version",
        :requires [[auto-build.echo :refer [level1-header]]
                   [tasks.local :as tl]],
-       :task (tl/run level1-header is-monorepo? *command-line-args*)},
+       :task (tl/run level1-header *command-line-args*)},
     projects {:doc "List existing projects that are git repo",
               :requires [[tasks.projects :as tp]
                          [auto-build.echo :refer [level1-header]]],
@@ -30,8 +24,4 @@
          "Show status of monorepo target project: list non commited modifications and non aligned deps references",
        :requires [[auto-build.echo :refer [level1-header]]
                   [tasks.status :as ts]],
-       :task (ts/run level1-header
-                     (fn [project-symbol]
-                       (re-find (re-pattern "com.github.hephaistox")
-                                (str project-symbol)))
-                     *command-line-args*)}}}
+       :task (ts/run level1-header *command-line-args*)}}}
