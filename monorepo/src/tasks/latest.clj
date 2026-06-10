@@ -1,7 +1,7 @@
 (ns tasks.latest
   "Move ref to latest"
   (:require [auto-build.project.cfg-mgt :refer
-             [project-dir is-git-repo? git-subdir-data]]
+             [project-dir extract-project is-git-repo? git-subdir-data]]
             [clojure.set]
             [auto-build.project.deps :as pd :refer
              [extract-paths-to-deps flatten-deps update-deps-edn]]
@@ -34,6 +34,35 @@
 ;; ********************************************************************************
 ;; Latest
 ;; ********************************************************************************
+
+(defn- bb-deps-to-latest
+  "Re-pin the hephaistox tooling dependencies (e.g. `auto-build`) declared in the
+  `bb.edn` of `local-app-dir` to the latest commit of their local sibling.
+
+  This is needed because `bb.edn` is not part of the `deps.edn` dependency graph."
+  [{:keys [normalln], :as printers} local-app-dir]
+  (doseq [{:keys [dep-alias dep path]} (pd/bb-hephaistox-deps printers
+                                                              local-app-dir)]
+    (let [{:git/keys [sha]} dep
+          build-dir (-> dep-alias
+                        str
+                        extract-project
+                        project-dir)
+          {:keys [actual-sha]} (retrieve-local-git build-dir git-subdir-data)]
+      (when actual-sha
+        (if (= sha actual-sha)
+          (normalln (format "`%s` (bb.edn) is already uptodate sha `%s`"
+                            dep-alias
+                            actual-sha))
+          (do (normalln (format "`%s` (bb.edn) is moved to sha `%s`"
+                                dep-alias
+                                actual-sha))
+              (pd/update-bb-edn printers
+                                local-app-dir
+                                path
+                                (-> dep
+                                    (dissoc :local/root)
+                                    (assoc :git/sha actual-sha)))))))))
 
 (defn- move-to-latest
   [{:keys [normalln uri-str subtitle], :as printers} target-dir]
@@ -85,6 +114,7 @@
                                               :git/url url)
                                        (cond-> root (assoc :deps/root
                                                       root))))))))
+        (bb-deps-to-latest printers local-app-dir)
         (recur (clojure.set/difference (into #{}
                                              (concat rlocal-app-dirs
                                                      (mapv :dir git-deps)
