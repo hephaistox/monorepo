@@ -1,24 +1,27 @@
-{:deps {com.github.hephaistox/auto-build
-          {:git/sha "319337735ac9f23be4b4dabdc610b5b0095b5ed2"}},
+{:deps {com.github.hephaistox/auto-build {:local/root "auto_build"},
+        #_{:git/sha "0c5a81483005c393094ca557fa0f43e1175ad57d"}},
  :paths ["monorepo/src"],
  :tasks
-   {:init
-      (defn to-dir [dir prj] (or dir (str/replace prj (re-pattern "-") "_"))),
-    :requires [[clojure.edn :as edn] [clojure.string :as str]],
-    copy {:doc "Execute copies defined in `reference/copy.edn`",
-          :requires [[tasks.copy :refer [do-copy]]],
-          :task (do-copy)},
-    delegate
+   {:requires [[clojure.edn :as edn] [clojure.string :as str]],
+    latest
       {:doc
-         "Delegate command to projects defined in `monorepo/reference/deps.edn`",
+         "References of monorepo target and its dependencies are moved to latest commit.",
        :requires [[auto-build.echo :refer [level1-header]]
-                  [tasks.delegate :refer [do-delegate]]],
-       :task (do-delegate level1-header *command-line-args*)},
-    push {:doc "Push a ref to all projects",
-          :requires [[auto-build.echo :refer [level1-header]]
-                     [tasks.push :refer [do-push]]],
-          :task (do-push level1-header *command-line-args*)},
-    status {:doc "Show status",
-            :requires [[auto-build.echo :refer [level1-header]]
-                       [tasks.show :refer [do-show]]],
-            :task (do-show level1-header)}}}
+                  [tasks.latest :as tl]],
+       :task (tl/run level1-header *command-line-args*)},
+    local
+      {:doc
+         "References of monorepo target and its dependencies are moved to local version",
+       :requires [[auto-build.echo :refer [level1-header]]
+                  [tasks.local :as tl]],
+       :task (tl/run level1-header *command-line-args*)},
+    projects {:doc "List existing projects that are git repo",
+              :requires [[tasks.projects :as tp]
+                         [auto-build.echo :refer [level1-header]]],
+              :task (tp/print-repos level1-header)},
+    status
+      {:doc
+         "Show status of monorepo target project: list non commited modifications and non aligned deps references",
+       :requires [[auto-build.echo :refer [level1-header]]
+                  [tasks.status :as ts]],
+       :task (ts/run level1-header *command-line-args*)}}}
